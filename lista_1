@@ -1,0 +1,49 @@
+# Mapeamento
+#    f->$s0
+#    g->$s1
+#    h->$s2
+#    i->$s3
+#    j->$s4
+#    A[0]->$s5
+#    B[0]->$s6
+#
+.text
+# Valores de teste
+    	li    	$s0, 1
+    	li    	$s1, 2
+    	li    	$s2, 3
+    	li    	$s3, 4
+    	li    	$s4, 5
+# Valores de teste vetor
+    	li    	$t0, 1
+    	li    	$t1, 2
+    	sw    	$t0, 0($s5)
+    	sw    	$t1, 4($s5)
+    	sw   	$t1, 0($s6)
+    	sw    	$t0, 4($s6)
+    
+#    	a) f = g * h + i
+letra_a:
+    	mul    $t0, $s1, $s2
+    	add    $s0, $t0, $s3
+
+#    	b) f = g * (h + i)    
+letra_b:
+    	add    $t0, $s2, $s3
+    	mul    $s0, $s1, $t0
+
+#  	c) f = g + (h - 5)
+letra_c:
+    	addi    $t0, $s2, -5
+    	add    	$s0, $s1, $t0
+
+#	d) [f , g] = (h * i) + (i * i)     # resultado de 64 bits, Hi em f e Lo em g
+letra_d:
+	mul	$s2, $s3
+	mfhi	$t0
+	mflo	$t1
+	mul	$s3, $s3
+	mfhi	$t2
+	mflo	$t3
+	add	$s0, $t0, $t2
+	add	$s1, $t1, $t3
