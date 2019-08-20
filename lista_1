@@ -26,16 +26,19 @@
 letra_a:
     	mul    $t0, $s1, $s2
     	add    $s0, $t0, $s3
+	jr	$ra
 
 #    	b) f = g * (h + i)    
 letra_b:
     	add    $t0, $s2, $s3
     	mul    $s0, $s1, $t0
+	jr	$ra
 
 #  	c) f = g + (h - 5)
 letra_c:
     	addi    $t0, $s2, -5
     	add    	$s0, $s1, $t0
+	jr	$ra
 
 #	d) [f , g] = (h * i) + (i * i)     # resultado de 64 bits, Hi em f e Lo em g
 letra_d:
@@ -47,3 +50,51 @@ letra_d:
 	mflo	$t3
 	add	$s0, $t0, $t2
 	add	$s1, $t1, $t3
+	jr	$ra
+	
+#	e) f = g * 9 				# sem utilizar a instrução de multiplicação
+letra_e:
+	li	$t0, 8
+loop_e:
+	blt	$t0, $0, end_e
+	add	$s0, $s0, $s1
+	addi	$t0, $t0, -1
+	j	loop_e
+end_e:
+	jr	$ra
+	
+#	f) f = 2^g 			# g=>0
+letra_f:
+	li	$t0, 1
+	sllv	$s0, $t0, $s1
+	jr	$ra
+	
+#	g) h = min(f , g) 		# mínimo valor entre f e g
+letra_g:
+	sub	$t0, $s0, $s1
+	blt	$t0, $0, min_f
+	add	$s2, $s1, $0
+	j	end_g
+min_f:
+	add	$s2, $s0, $0
+end_g:
+	jr	$ra
+	
+#	h) h = max(f , g)		# máximo valor entre f e g
+letra_h:
+	sub	$t0, $s0, $s1
+	blt	$t0, $0, max_g
+	add	$s2, $s1, $0
+	j	end_h
+max_g:
+	add	$s2, $s0, $0
+end_h:
+	jr	$ra
+	
+#	i) B[8] = A[i - j]
+letra_i:
+	add	$t0, $s5, $s3
+	sub	$t0, $t0, $s4
+	lw	$t1, 0($t0)
+	sw	$t1, 32($s6)
+	jr	$ra
