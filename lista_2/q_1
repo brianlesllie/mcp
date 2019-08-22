@@ -1,0 +1,14 @@
+# Q1)
+#	Faça um programa que leia o conteúdo da posição 0x00, armazene-a na posição 0x04 se ela for
+#	positiva, ou na posição 0x08, se for negativa.
+#
+.text
+	la	$t0, ($gp)
+	li	$t1, -1		#teste
+	bge	$t1, $0, positivo_q1
+	sw	$t1, 8($t0)
+	j	end_q1
+positivo_q1:
+	sw	$t1, 4($t0)
+end_q1:
+	nop
