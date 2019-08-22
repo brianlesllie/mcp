@@ -1,3 +1,4 @@
+# Q4)
 # Mapeamento
 #    f->$s0
 #    g->$s1
@@ -8,6 +9,10 @@
 #    B[0]->$s6
 #
 .text
+main:
+	jal	letra_a
+	li	$v0, 10
+	syscall
 # Valores de teste
     	li    	$s0, 1
     	li    	$s1, 2
@@ -24,14 +29,14 @@
     
 #    	a) f = g * h + i
 letra_a:
-    	mul    $t0, $s1, $s2
-    	add    $s0, $t0, $s3
+    	mul    	$t0, $s1, $s2
+    	add    	$s0, $t0, $s3
 	jr	$ra
 
 #    	b) f = g * (h + i)    
 letra_b:
-    	add    $t0, $s2, $s3
-    	mul    $s0, $s1, $t0
+    	add    	$t0, $s2, $s3
+    	mul    	$s0, $s1, $t0
 	jr	$ra
 
 #  	c) f = g + (h - 5)
@@ -93,8 +98,17 @@ end_h:
 	
 #	i) B[8] = A[i - j]
 letra_i:
-	add	$t0, $s5, $s3
-	sub	$t0, $t0, $s4
-	lw	$t1, 0($t0)
+	add	$t0, $s5, $s3		#A[i]
+	sub	$t0, $t0, $s4		#A[i-j]
+	lw	$t1, 0($t0)		
 	sw	$t1, 32($s6)
+	jr	$ra
+
+#	j) B[32] = A[i] + A[j]
+letra_j:
+	add	$t0, $s5, $s3
+	add	$t1, $s5, $s4
+	add	$t0, $t0, $t1
+	lw	$t1, 0($t0)
+	sw	$t1, 128($s6)
 	jr	$ra
