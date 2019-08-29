@@ -1,0 +1,39 @@
+# Q9)
+#	Faça um programa para buscar um determinado valor em um array de inteiros. O endereço inicial do
+#	vetor está armazenado no endereço de memória 0x00, o tamanho do vetor está no endereço 0x04
+#	e valor que será pesquisado está no endereço 0x08. Caso o valor seja encontrado, escreva 0x01 no
+#	endereço 0x0C, caso contrário, escreva 0x00.
+#
+	# teste
+	addi	$t0, $0, 2          #tamanho do vetor
+	addi	$t1, $0, 3
+	addi	$t2, $0, 1
+	#
+	addi	$t3, $0, 0x10008010 #endereço do vetor
+	sw	$t3, ($gp)
+	sw	$t0, 4($gp)
+	sw	$t2, 8($gp)	# acha
+	#sw	$t1, 8($gp)	# não acha
+	sw	$t0, 16($gp)
+	sw	$t2, 20($gp)
+	#
+		
+	lw	$t0, ($gp)	# base do vetor
+	lw	$t1, 4($gp)	# fim do vetor 
+	lw	$t2, 8($gp)	# valor a ser encontrado
+	sll	$t1, $t1, 2	# convertendo p/ byte
+	add	$t1, $t0, $t1	# $t1=fim do vetor
+loop_q9:
+	blt	$t1, $t0, nao_encontrado_q9
+	lw	$t3, ($t0)
+	beq	$t2, $t3, encontrado_q9
+	addi	$t0, $t0, 4
+	j	loop_q9
+encontrado_q9:
+	addi	$t4, $0, 1
+	j	end_q9
+nao_encontrado_q9:
+	add	$t4, $0, $0
+end_q9:
+	sw	$t4, 12($gp)
+	
