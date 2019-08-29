@@ -1,0 +1,41 @@
+# Q10)
+#	Faça um programa para contar o número de elementos encontrados em um array de inteiros. O
+#	endereço inicial do vetor está armazenado no endereço de memória 0x00, o tamanho do vetor está
+#	no endereço 0x04 e valor que será contado está no endereço 0x08. Armazene no endereço 0x0C o
+#	número de elementos encontrados na procura.
+#
+	# teste
+	addi	$t0, $0, 4		      # tamanho do vetor
+	addi	$t1, $0, 3		
+	addi	$t2, $0, 1
+	addi	$t4, $0, 2
+	#
+	addi	$t3, $0, 0x10008010	# endereço do vetor
+	sw	$t3, ($gp)
+	sw	$t0, 4($gp)
+	sw	$t2, 8($gp)		        # acha
+	#sw	$t1, 8($gp)		        # não acha
+	sw	$t0, 16($gp)
+	sw	$t2, 20($gp)
+	sw	$t2, 24($gp)
+	sw	$t4, 28($gp)
+	#
+		
+	lw	$t0, ($gp)	          # base do vetor
+	lw	$t1, 4($gp)	          # fim do vetor 
+	lw	$t2, 8($gp)	          # valor a ser encontrado
+	sll	$t1, $t1, 2	          # convertendo p/ byte
+	add	$t1, $t0, $t1	        # $t1=fim do vetor
+	add	$t4, $0, $0	          # inicializa contador
+loop_q10:
+	blt	$t1, $t0, end_q10
+	lw	$t3, ($t0)
+	addi	$t0, $t0, 4
+	beq	$t2, $t3, encontrado_q10
+	j	loop_q10
+encontrado_q10:
+	addi	$t4, $t4, 1
+	j	loop_q10
+end_q10:
+	sw	$t4, 12($gp)
+	
