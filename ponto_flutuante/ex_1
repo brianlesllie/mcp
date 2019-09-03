@@ -1,0 +1,30 @@
+.data 0x10008000
+.float 4.0
+.float 8.0
+.float 3.0
+.float 6.5
+ok: .asciiz "Aprovado"
+nok: .asciiz "REPROVADO"
+
+
+.text
+#	li	$s1, 2
+
+	lwc1 $f1, 0($gp)
+	lwc1 $f2, 4($gp)
+	lwc1 $f3, 8($gp)
+	lwc1 $f4, 12($gp)
+	
+	add.s $f0,$f1,$f2
+	add.s $f0,$f0,$f4
+
+#	colocando 3 no $f5
+	li	$s0, 3	
+	mtc1	$s0, $f5
+	cvt.s.w $f5,$f5
+#	mtc1	$s1, $f1
+	
+	div.s	$f12, $f0, $f5
+	
+	li	$v0, 2
+	syscall
