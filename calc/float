@@ -2,25 +2,25 @@
 str1: .asciiz "Digite 0=adição, 1=subtração, 2=multiplicação, 3=divisão ou 4=sair\n"
 n1:   .asciiz "Digite um número real\n"
 out_of_range: .asciiz "Out of range\n"
+barra: .asciiz "\n"
 
 jump_table: .word case0,case1,case2,case3,case4
 
 # Mapeamento
 # $f2=resultado
 
-# trocar f2 por f12
-# colocar para imprimir o valor atual
+
 .text
 main:
 	
-	mtc1 $zero, $f2			#resultado=0
+	mtc1 $zero, $f12			#resultado=0
 	
-	la $a0, n1			#pega o primeiro numero p/ a operação
+	la $a0, n1				#pega o primeiro numero p/ a operação
 	li $v0, 4
 	syscall
 	li $v0, 6
 	syscall
-	add.s $f2, $f2, $f0
+	add.s $f12, $f12, $f0
 loop_switch:
 	la $a0, str1
 	li $v0, 4
@@ -48,7 +48,12 @@ case0:
 	syscall
 	li $v0, 6
 	syscall
-	add.s $f2, $f2, $f0
+	add.s $f12, $f12, $f0
+	li $v0, 2
+	syscall
+	la $a0, barra
+	li $v0, 4
+	syscall
 	j loop_switch
 
 case1:
@@ -57,7 +62,12 @@ case1:
 	syscall
 	li $v0, 6
 	syscall
-	sub.s $f2, $f2, $f0
+	sub.s $f12, $f12, $f0
+	li $v0, 2
+	syscall
+	la $a0, barra
+	li $v0, 4
+	syscall
 	j loop_switch
 
 case2:
@@ -66,7 +76,12 @@ case2:
 	syscall
 	li $v0, 6
 	syscall
-	mul.s $f2, $f2, $f0
+	mul.s $f12, $f12, $f0
+	li $v0, 2
+	syscall
+	la $a0, barra
+	li $v0, 4
+	syscall
 	j loop_switch	
 
 case3:
@@ -75,7 +90,12 @@ case3:
 	syscall
 	li $v0, 6
 	syscall
-	div.s $f2, $f2, $f0
+	div.s $f12, $f12, $f0
+	li $v0, 2
+	syscall
+	la $a0, barra
+	li $v0, 4
+	syscall
 	j loop_switch
 	
 case4:
@@ -89,4 +109,3 @@ default:
 	
 switch_end:
 	j main
-	
