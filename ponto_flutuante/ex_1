@@ -19,8 +19,8 @@ nok: .asciiz "REPROVADO"
 	add.s $f0,$f0,$f4
 
 #	colocando 3 no $f5
-	li	$s0, 3	
-	mtc1	$s0, $f5
+	li	$t0, 3	
+	mtc1	$t0, $f5
 	cvt.s.w $f5,$f5
 #	mtc1	$s1, $f1
 	
