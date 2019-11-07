@@ -1,2 +1,196 @@
 .data
-matriz:
+matrizA: 
+	.word 3
+	.word 3
+	.space 36
+
+matrizB:
+	.word 3 #linhas
+	.word 3 #colunas
+	.float 10.0, 5.0, 6.0  # dados[0][]
+	.float 21.0, 0.0, 1.0  # dados[1][]
+	.float 30.0, 5.5, 6.75 # dados[2][]
+
+	
+line_begin: .asciiz "| "
+sep:        .asciiz " "
+line_end:   .asciiz " |\n"
+	
+.text
+main:
+	la  $a0, matrizA
+	jal le_matriz
+	la  $a0, matrizA
+	jal imprime_matriz
+	
+	li $v0, 10
+	syscall
+	
+#for(i=0; i < matriz.linhas; i++){
+#   print_string("| ");
+#   for(j=0; j < matriz.colunas; j++){
+#      print_float(matriz.dados[i][j]);
+#      print_string(" ");
+#   }
+#   print_string(" |\n");
+#}
+le_matriz:
+
+move $s2, $a0
+lw $s0, 0($s2) # $s0 <- matriz.linhas 
+lw $s1, 4($s2) # $s1 <- matriz.colunas
+
+li $t0, 0
+le_matriz_for1: 
+	bge $t0, $s0, le_matriz_for1_end
+	
+	# print_string("| ");
+	la $a0, line_begin
+	li $v0, 4
+	syscall
+	
+	li $t1, 0
+	le_matriz_for2:
+		bge $t1, $s1, le_matriz_for2_end
+		
+		
+		# print_float(matriz.dados[i][j]);
+		mul $t2, $t0, $s1 # z = i*matriz.colunas
+		add $t2, $t2, $t1 # z = z + j
+		sll $t2, $t2, 2   # z = z*4
+		add $t2, $t2, $s2
+		#lwc1 $f12, 8($t2) # $f12 <- matriz.dados[i][j]
+		li $v0, 6
+		syscall 
+		
+		swc1	$f0, 8($t2) # $f0 -> matriz.dados[i][j]
+		
+		#print_string(" ");
+	        la $a0, sep
+	        li $v0, 4
+	        syscall
+		
+		
+		addi $t1, $t1, 1
+		j le_matriz_for2
+	le_matriz_for2_end:
+	
+	#print_string(" |\n");
+	la $a0, line_end
+	li $v0, 4
+	syscall
+	
+	addi $t0, $t0, 1
+	j le_matriz_for1
+le_matriz_for1_end:
+	jr $ra
+#---------------------------------------------------------
+imprime_matriz:
+
+move $s2, $a0
+lw $s0, 0($s2) # $s0 <- matriz.linhas 
+lw $s1, 4($s2) # $s1 <- matriz.colunas
+
+li $t0, 0
+imprime_matriz_for1: 
+	bge $t0, $s0, imprime_matriz_for1_end
+	
+	# print_string("| ");
+	la $a0, line_begin
+	li $v0, 4
+	syscall
+	
+	li $t1, 0
+	imprime_matriz_for2:
+		bge $t1, $s1, imprime_matriz_for2_end
+		
+		
+		# print_float(matriz.dados[i][j]);
+		mul $t2, $t0, $s1 # z = i*matriz.colunas
+		add $t2, $t2, $t1 # z = z + j
+		sll $t2, $t2, 2   # z = z*4
+		add $t2, $t2, $s2
+		lwc1 $f12, 8($t2) # $f12 <- matriz.dados[i][j]
+		li $v0, 2
+		syscall 		
+		#print_string(" ");
+	        la $a0, sep
+	        li $v0, 4
+	        syscall
+		
+		
+		addi $t1, $t1, 1
+		j imprime_matriz_for2
+	imprime_matriz_for2_end:
+	
+	#print_string(" |\n");
+	la $a0, line_end
+	li $v0, 4
+	syscall
+	
+	addi $t0, $t0, 1
+	j imprime_matriz_for1
+imprime_matriz_for1_end:
+
+	jr $ra
+#------------------------------------------------------------------
+soma_matriz:
+
+move $s2, $a1
+lw $s0, 0($s2) # $s0 <- matriz.linhas 
+lw $s1, 4($s2) # $s1 <- matriz.colunas
+
+move $s3, $a2
+move $s4, $a0
+
+li $t0, 0
+soma_matriz_for1: 
+	bge $t0, $s0, soma_matriz_for1_end
+	
+	# print_string("| ");
+	la $a0, line_begin
+	li $v0, 4
+	syscall
+	
+	li $t1, 0
+	soma_matriz_for2:
+		bge $t1, $s1, soma_matriz_for2_end
+		
+		
+		# print_float(matriz.dados[i][j]);
+		mul $t2, $t0, $s1 # z = i*matriz.colunas
+		add $t2, $t2, $t1 # z = z + j
+		sll $t2, $t2, 2   # z = z*4
+		add $t3, $t2, $s2
+		add $t4, $t2, $s3
+		add $t5, $t2, $s4
+		lwc1 $f1, 8($t3) # $f2 <- matriz.dados[i][j]
+		lwc1 $f2, 8($t4) # $f2 <- matriz.dados[i][j]
+		
+		add.s $f12, $f1, $f2
+		swc1  $f12, 8($t2) # $f0 -> matriz.dados[i][j]
+
+		li $v0, 2
+		syscall 		
+		#print_string(" ");
+	        la $a0, sep
+	        li $v0, 4
+	        syscall
+		
+		
+		addi $t1, $t1, 1
+		j soma_matriz_for2
+	soma_matriz_for2_end:
+	
+	#print_string(" |\n");
+	la $a0, line_end
+	li $v0, 4
+	syscall
+	
+	addi $t0, $t0, 1
+	j soma_matriz_for1
+soma_matriz_for1_end:
+	jr $ra
+#----------------------------------------------------------
+
+
